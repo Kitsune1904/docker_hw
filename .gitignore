@@ -6,7 +6,5 @@
 /env/.env.prod
 /env/.env.dev
 /env/.env.test
-docker-compose.yml
-Dockerfile
 /.env
 /.docker-env

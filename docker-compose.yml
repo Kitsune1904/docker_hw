@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo
+    restart: always
+    volumes:
+      - mongo-data:/data/db
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    ports:
+      - '27017:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: annanorri992
+      MONGO_INITDB_ROOT_PASSWORD: $MONGO_PASSWORD
+      MONGO_INITDB_DATABASE: admin
+
+  app:
+    ports:
+      - '5001:5000'
+    environment:
+      MONGO: mongodb://annanorri992:$MONGO_PASSWORD@mongo:27017/$NODE_ENV_COMPOSE?authSource=admin
+    build:
+      context: .
+      args:
+        - NODE_ENV_ARG=$NODE_ENV_COMPOSE
+    env_file:
+      - /env/.env.$NODE_ENV_COMPOSE
+    depends_on:
+      - mongo
+    entrypoint: npm run $NODE_ENV_COMPOSE
+
+volumes:
+  mongo-data:
